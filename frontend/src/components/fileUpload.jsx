@@ -1,7 +1,6 @@
 import {useState} from 'react';
-import {supabase} from '../lib/supabase.js';
 
-export default function FileUpload({userId, onUploaded}) {
+export default function FileUpload({userId, jwtToken, onUploaded}) {
     const [file, setFile] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState('');
@@ -14,54 +13,30 @@ export default function FileUpload({userId, onUploaded}) {
     };
 
     const handleUpload = async () => {
-        if (!file) {
-            setError('Please select a file first.');
-            return;
-        }
+        if (!file) return;
 
         setUploading(true);
-        setError('');
-        setSuccess('');
 
-        const filePath = `${userId}/${Date.now()}-${file.name}`;
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('userId', userId);
 
         try {
-            // 1️⃣ Upload to Supabase Storage
-            const {error: uploadError} = await supabase.storage
-                .from('safedocs')
-                .upload(filePath, file);
+            const res = await fetch('http://localhost:5000/upload', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`
+                }
+            });
 
-            if (uploadError) throw uploadError;
-
-            // 2️⃣ Get signed URL for private access
-            const {data: signedUrlData, error: urlError} = await supabase.storage
-                .from('safedocs')
-                .createSignedUrl(filePath, 60 * 60); // 1 hour expiry
-
-            if (urlError) throw urlError;
-
-            const fileUrl = signedUrlData.signedUrl;
-            console.log('test ', {
-                user_id: userId,
-                filename: file.name,
-                url: fileUrl,
-            })
-            // 3️⃣ Insert metadata into database
-            const {error: dbError} = await supabase.from('files').insert([
-                {
-                    user_id: userId,
-                    filename: file.name,
-                    url: fileUrl,
-                },
-            ]);
-
-            if (dbError) throw dbError;
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Upload failed');
 
             setSuccess('Upload successful!');
             setFile(null);
             onUploaded?.();
         } catch (err) {
-            console.error('Upload failed:', err);
             setError(err.message);
         } finally {
             setUploading(false);
