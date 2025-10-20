@@ -13,6 +13,13 @@ services:
       - "5173:5173"
     networks:
       - app-network
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "4000:4000"
+    networks:
+      - app-network
 
 networks:
   app-network:

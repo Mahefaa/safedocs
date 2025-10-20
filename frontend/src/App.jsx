@@ -1,37 +1,23 @@
-import { useEffect, useState } from 'react';
-import { supabase } from './lib/supabase.js';
+import {useState} from 'react';
 import AuthForm from "./components/authForm.jsx";
 import FileUpload from "./components/fileUpload.jsx";
 import FileList from "./components/fileList.jsx";
 
 export default function App() {
     const [user, setUser] = useState(null);
-    const [session, setSession] = useState(null);
+    const [jwtToken, setJwtToken] = useState(null);
     const [refreshKey, setRefreshKey] = useState(0);
 
-    useEffect(() => {
-        const initAuth = async () => {
-            const { data } = await supabase.auth.getSession();
-            setSession(data?.session ?? null);
-            setUser(data?.session?.user ?? null);
-        };
-        initAuth();
-
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session);
-            setUser(session?.user ?? null);
-        });
-
-        return () => listener.subscription.unsubscribe();
-    }, []);
-
-    const handleLogout = async () => {
-        await supabase.auth.signOut();
-        setSession(null);
+    const handleLogout = () => {
         setUser(null);
+        setJwtToken(null);
     };
 
-    if (!user) return <AuthForm onLogin={(jwt, u) => setSession({ access_token: jwt, user: u })} />;
+    if (!user)
+        return <AuthForm onLogin={(token, u) => {
+            setJwtToken(token);
+            setUser(u);
+        }}/>;
 
     return (
         <div className="p-8 max-w-lg mx-auto font-sans">
@@ -47,7 +33,7 @@ export default function App() {
 
             <FileUpload
                 userId={user.id}
-                jwtToken={session?.access_token} // pass JWT for uploads if needed
+                jwtToken={jwtToken} // use this for gateway/file-service
                 onUpload={() => setRefreshKey((k) => k + 1)}
             />
 
@@ -55,7 +41,7 @@ export default function App() {
                 <FileList
                     key={refreshKey}
                     userId={user.id}
-                    jwtToken={session?.access_token} // pass JWT for listing
+                    jwtToken={jwtToken} // use this for fetching file list
                 />
             </div>
         </div>

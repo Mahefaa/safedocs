@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { supabase } from '../lib/supabase.js';
 
-export default function AuthForm({ onAuth }) {
+export default function AuthForm({ onLogin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [mode, setMode] = useState('signin');
@@ -14,13 +13,23 @@ export default function AuthForm({ onAuth }) {
         setErrorMsg('');
 
         try {
-            const { error } =
-                mode === 'signin'
-                    ? await supabase.auth.signInWithPassword({ email, password })
-                    : await supabase.auth.signUp({ email, password });
+            const url = mode === 'signin'
+                ? 'http://localhost:4000/login'
+                : 'http://localhost:4000/signup';
 
-            if (error) throw error;
-            onAuth();
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (!res.ok) {
+                const errText = await res.text();
+                throw new Error(errText);
+            }
+
+            const { jwtToken, user } = await res.json();
+            onLogin(jwtToken, user); // send JWT and user to App.jsx
         } catch (err) {
             setErrorMsg(err.message);
         } finally {
@@ -64,6 +73,7 @@ export default function AuthForm({ onAuth }) {
                     <>
                         Don’t have an account?{' '}
                         <button
+                            type="button"
                             onClick={() => setMode('signup')}
                             className="text-indigo-600 hover:underline"
                         >
@@ -74,6 +84,7 @@ export default function AuthForm({ onAuth }) {
                     <>
                         Already have an account?{' '}
                         <button
+                            type="button"
                             onClick={() => setMode('signin')}
                             className="text-indigo-600 hover:underline"
                         >

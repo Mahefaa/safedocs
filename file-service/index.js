@@ -7,9 +7,8 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
 const PORT = 5000;
-const SUPABASE_URL = "https://pmyqzhztfaoldvmqkzqj.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBteXF6aHp0ZmFvbGR2bXFrenFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5MDQ0MzEsImV4cCI6MjA3NjQ4MDQzMX0.gPY7cMwvhXRpLstt5D0wR_XyoQNv1jRdbScADfQa9ME";
-
+const SUPABASE_URL = "";
+const SUPABASE_KEY = "";
 
 // List files for a given user
 app.get('/files', async (req, res) => {
