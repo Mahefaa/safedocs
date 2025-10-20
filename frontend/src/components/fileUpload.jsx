@@ -22,7 +22,7 @@ export default function FileUpload({userId, jwtToken, onUploaded}) {
         formData.append('userId', userId);
 
         try {
-            const res = await fetch('http://localhost:3000/files/files', {
+            const res = await fetch('http://localhost:3000/files', {
                 method: 'POST',
                 body: formData,
                 headers: {

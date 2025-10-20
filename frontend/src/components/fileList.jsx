@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 
-const FILE_SERVICE_URL = `http://localhost:3000/files`;
+const FILE_SERVICE_URL = `http://localhost:3000`;
 
 export default function FileList({userId, jwtToken}) {
     const [files, setFiles] = useState([]);
