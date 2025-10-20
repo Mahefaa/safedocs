@@ -14,8 +14,8 @@ export default function AuthForm({ onLogin }) {
 
         try {
             const url = mode === 'signin'
-                ? 'http://localhost:4000/login'
-                : 'http://localhost:4000/signup';
+                ? 'http://localhost:3000/auth/login'
+                : 'http://localhost:3000/auth/signup';
 
             const res = await fetch(url, {
                 method: 'POST',

@@ -40,7 +40,7 @@ app.get('/files', async (req, res) => {
 });
 
 // Upload endpoint
-app.post('/upload', upload.single('file'), async (req, res) => {
+app.post('/files', upload.single('file'), async (req, res) => {
     const {userId} = req.body;
     if (!req.file || !userId) return res.status(400).json({error: 'Missing file or userId'});
     const token = req.headers.authorization;
