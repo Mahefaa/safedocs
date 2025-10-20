@@ -1,0 +1,19 @@
+services:
+  file-service:
+    build: ./file-service
+    container_name: file-service
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

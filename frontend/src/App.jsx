@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react';
-import { supabase } from './lib/supabase';
-import AuthForm from './components/authForm';
-import FileUpload from './components/fileUpload';
-import FileList from './components/fileList';
+import { supabase } from './lib/supabase.js';
+import AuthForm from "./components/authForm.jsx";
+import FileUpload from "./components/fileUpload.jsx";
+import FileList from "./components/fileList.jsx";
 
 export default function App() {
     const [user, setUser] = useState(null);
+    const [session, setSession] = useState(null);
     const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
         const initAuth = async () => {
-            const { data } = await supabase.auth.getUser();
-            setUser(data?.user ?? null);
+            const { data } = await supabase.auth.getSession();
+            setSession(data?.session ?? null);
+            setUser(data?.session?.user ?? null);
         };
         initAuth();
 
         const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session);
             setUser(session?.user ?? null);
         });
 
@@ -24,10 +27,11 @@ export default function App() {
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
+        setSession(null);
         setUser(null);
     };
 
-    if (!user) return <AuthForm onAuth={() => setRefreshKey((k) => k + 1)} />;
+    if (!user) return <AuthForm onLogin={(jwt, u) => setSession({ access_token: jwt, user: u })} />;
 
     return (
         <div className="p-8 max-w-lg mx-auto font-sans">
@@ -41,10 +45,18 @@ export default function App() {
                 </button>
             </header>
 
-            <FileUpload userId={user.id} onUpload={() => setRefreshKey((k) => k + 1)} />
+            <FileUpload
+                userId={user.id}
+                jwtToken={session?.access_token} // pass JWT for uploads if needed
+                onUpload={() => setRefreshKey((k) => k + 1)}
+            />
 
             <div className="mt-6">
-                <FileList key={refreshKey} userId={user.id} />
+                <FileList
+                    key={refreshKey}
+                    userId={user.id}
+                    jwtToken={session?.access_token} // pass JWT for listing
+                />
             </div>
         </div>
     );
