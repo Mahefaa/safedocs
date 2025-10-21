@@ -29,43 +29,43 @@ export default function AuthForm({ onAuth }) {
     };
 
     return (
-        <div className="max-w-sm mx-auto mt-20 p-6 border rounded-lg shadow-sm">
-            <h1 className="text-2xl font-semibold text-center mb-6">
+        <div className="">
+            <h1 className="">
                 {mode === 'signin' ? 'Sign In' : 'Create Account'}
             </h1>
-            <form onSubmit={handleAuth} className="space-y-4">
+            <form onSubmit={handleAuth} className="">
                 <input
-                    type="email"
+                    type=""
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email"
+                    placeholder=""
                     required
-                    className="w-full p-2 border rounded"
+                    className=""
                 />
                 <input
-                    type="password"
+                    type=""
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
+                    placeholder=""
                     required
-                    className="w-full p-2 border rounded"
+                    className=""
                 />
-                {errorMsg && <p className="text-red-600 text-sm">{errorMsg}</p>}
+                {errorMsg && <p className="">{errorMsg}</p>}
                 <button
-                    type="submit"
+                    type=""
                     disabled={loading}
-                    className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700"
+                    className=""
                 >
                     {loading ? 'Please wait...' : mode === 'signin' ? 'Sign In' : 'Sign Up'}
                 </button>
             </form>
-            <p className="text-sm text-center mt-4 text-gray-600">
+            <p className="">
                 {mode === 'signin' ? (
                     <>
                         Don’t have an account?{' '}
                         <button
                             onClick={() => setMode('signup')}
-                            className="text-indigo-600 hover:underline"
+                            className=""
                         >
                             Register
                         </button>
@@ -75,7 +75,7 @@ export default function AuthForm({ onAuth }) {
                         Already have an account?{' '}
                         <button
                             onClick={() => setMode('signin')}
-                            className="text-indigo-600 hover:underline"
+                            className=""
                         >
                             Sign in
                         </button>
