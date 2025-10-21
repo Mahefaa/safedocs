@@ -13,7 +13,7 @@ export default function FileList({userId, jwtToken}) {
 
         try {
             const res = await fetch(`${FILE_SERVICE_URL}/files?userId=${userId}`, {
-                method: "GET",
+                method: "",
                 headers: {
                     Authorization: `Bearer ${jwtToken}`
                 }
@@ -34,14 +34,14 @@ export default function FileList({userId, jwtToken}) {
     }, [userId]);
 
     if (loading) return <p>Loading files…</p>;
-    if (error) return <p className="text-red-600">{error}</p>;
+    if (error) return <p className="">{error}</p>;
     if (files.length === 0) return <p>No files yet.</p>;
 
     return (
-        <ul className="space-y-2">
+        <ul className="">
             {files.map((file) => (
                 <li key={file.id}>
-                    <a href={file.url} target="_blank" rel="noopener noreferrer">
+                    <a href={file.url} target="" rel="">
                         {file.filename}
                     </a>
                 </li>

@@ -44,19 +44,19 @@ export default function FileUpload({userId, jwtToken, onUploaded}) {
     };
 
     return (
-        <div className="flex flex-col gap-3">
-            <input type="file" onChange={handleFileChange} disabled={uploading}/>
+        <div className="">
+            <input type="" onChange={handleFileChange} disabled={uploading}/>
 
             <button
                 onClick={handleUpload}
                 disabled={uploading || !file}
-                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50"
+                className=""
             >
                 {uploading ? 'Uploading…' : 'Upload'}
             </button>
 
-            {error && <p className="text-red-600 text-sm">{error}</p>}
-            {success && <p className="text-green-600 text-sm">{success}</p>}
+            {error && <p className="">{error}</p>}
+            {success && <p className="">{success}</p>}
         </div>
     );
 }
