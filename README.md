@@ -1,16 +1,86 @@
-# React + Vite
+# SafeDocs - CS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A beautiful, modern web application for secure document storage and management, built with React, TailwindCSS, and Supabase.
 
-Currently, two official plugins are available:
+![SafeDocs](https://img.shields.io/badge/React-19.1.1-blue)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4.1-38bdf8)
+![Supabase](https://img.shields.io/badge/Supabase-2.75.1-3ecf8e)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- 🎨 **Beautiful UI** - Modern design with gradients, animations, and glass morphism
+- 🔐 **Secure Authentication** - Email/password authentication via Supabase
+- 📤 **Drag & Drop Upload** - Intuitive file upload with visual feedback
+- 📁 **File Management** - View, download, and delete files with ease
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Quick Start
 
-## Expanding the ESLint configuration
+### Prerequisites
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Node.js 18+ installed
+- Supabase account and project
+
+### Installation
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Mahefaa/safedocs.git
+   cd safedocs
+   ```
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables**
+
+   Create a `.env.local` file in the root directory:
+
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+4. **Start development server**
+
+   ```bash
+   npm run dev
+   ```
+5. **Open in browser**
+   ```
+   http://localhost:5173
+   ```
+
+## Tech Stack
+### Frontend
+- **React 19** - UI library
+- **Vite 7** - Build tool & dev server
+- **TailwindCSS 4** - Utility-first CSS framework
+- **clsx & tailwind-merge** - Class name utilities
+
+### Backend
+- **Supabase** - Authentication & storage
+- **PostgreSQL** - Database (via Supabase)
+- **Supabase Storage** - File storage
+
+### Development
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+
+## Available Scripts
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+npm run format       # Format code with Prettier
+npm run format:check # Check code formatting
+```
+
+## Configuration
+### Supabase Setup
+1. Create a Supabase project
+2. Create a storage bucket named `safedocs`
+3. Set up Row Level Security (RLS) policies
+4. Create a `files` table (optional, for metadata)
