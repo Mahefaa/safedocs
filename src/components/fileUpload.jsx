@@ -1,87 +1,82 @@
-import {useState} from 'react';
-import {supabase} from '../lib/supabase.js';
+import { useState } from 'react';
 
-export default function FileUpload({userId, onUploaded}) {
-    const [file, setFile] = useState(null);
-    const [uploading, setUploading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+import { supabase } from '../lib/supabase.js';
 
-    const handleFileChange = (e) => {
-        setFile(e.target.files?.[0] ?? null);
-        setError('');
-        setSuccess('');
-    };
+export default function FileUpload({ userId, onUploaded }) {
+  const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-    const handleUpload = async () => {
-        if (!file) {
-            setError('Please select a file first.');
-            return;
-        }
+  const handleFileChange = (e) => {
+    setFile(e.target.files?.[0] ?? null);
+    setError('');
+    setSuccess('');
+  };
 
-        setUploading(true);
-        setError('');
-        setSuccess('');
+  const handleUpload = async () => {
+    if (!file) {
+      setError('Please select a file first.');
+      return;
+    }
 
-        const filePath = `${userId}/${Date.now()}-${file.name}`;
+    setUploading(true);
+    setError('');
+    setSuccess('');
 
-        try {
-            // 1️⃣ Upload to Supabase Storage
-            const {error: uploadError} = await supabase.storage
-                .from('safedocs')
-                .upload(filePath, file);
+    const filePath = `${userId}/${Date.now()}-${file.name}`;
 
-            if (uploadError) throw uploadError;
+    try {
+      // 1️⃣ Upload to Supabase Storage
+      const { error: uploadError } = await supabase.storage.from('safedocs').upload(filePath, file);
 
-            // 2️⃣ Get signed URL for private access
-            const {data: signedUrlData, error: urlError} = await supabase.storage
-                .from('safedocs')
-                .createSignedUrl(filePath, 60 * 60); // 1 hour expiry
+      if (uploadError) throw uploadError;
 
-            if (urlError) throw urlError;
+      // 2️⃣ Get signed URL for private access
+      const { data: signedUrlData, error: urlError } = await supabase.storage
+        .from('safedocs')
+        .createSignedUrl(filePath, 60 * 60); // 1 hour expiry
 
-            const fileUrl = signedUrlData.signedUrl;
-            console.log('test ', {
-                user_id: userId,
-                filename: file.name,
-                url: fileUrl,
-            })
-            // 3️⃣ Insert metadata into database
-            const {error: dbError} = await supabase.from('files').insert([
-                {
-                    user_id: userId,
-                    filename: file.name,
-                    url: fileUrl,
-                },
-            ]);
+      if (urlError) throw urlError;
 
-            if (dbError) throw dbError;
+      const fileUrl = signedUrlData.signedUrl;
+      console.log('test ', {
+        user_id: userId,
+        filename: file.name,
+        url: fileUrl,
+      });
+      // 3️⃣ Insert metadata into database
+      const { error: dbError } = await supabase.from('files').insert([
+        {
+          user_id: userId,
+          filename: file.name,
+          url: fileUrl,
+        },
+      ]);
 
-            setSuccess('Upload successful!');
-            setFile(null);
-            onUploaded?.();
-        } catch (err) {
-            console.error('Upload failed:', err);
-            setError(err.message);
-        } finally {
-            setUploading(false);
-        }
-    };
+      if (dbError) throw dbError;
 
-    return (
-        <div className="">
-            <input type="" onChange={handleFileChange} disabled={uploading}/>
+      setSuccess('Upload successful!');
+      setFile(null);
+      onUploaded?.();
+    } catch (err) {
+      console.error('Upload failed:', err);
+      setError(err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
 
-            <button
-                onClick={handleUpload}
-                disabled={uploading || !file}
-                className=""
-            >
-                {uploading ? 'Uploading…' : 'Upload'}
-            </button>
+  return (
+    <div className="">
+      <input type="" onChange={handleFileChange} disabled={uploading} />
 
-            {error && <p className="">{error}</p>}
-            {success && <p className="">{success}</p>}
-        </div>
-    );
+      <button onClick={handleUpload} disabled={uploading || !file} className="">
+        {uploading ? 'Uploading…' : 'Upload'}
+      </button>
+
+      {error && <p className="">{error}</p>}
+      {success && <p className="">{success}</p>}
+    </div>
+  );
 }
